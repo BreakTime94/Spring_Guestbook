@@ -15,8 +15,4 @@ public class IndexController {
     return Map.of("test", 123456);
   }
 
-  @GetMapping("guestbook/list")
-  public void list(){
-
-  }
 }

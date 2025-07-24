@@ -1,12 +1,17 @@
 package com.climbjava.guestbook.service;
 
 import com.climbjava.guestbook.dto.GuestbookDTO;
+import com.climbjava.guestbook.dto.PageRequestDTO;
+import com.climbjava.guestbook.dto.PageResponseDTO;
 import com.climbjava.guestbook.repository.GuestbookRepository;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,31 +34,46 @@ public class GuestbookServiceTest {
   }
   @Test
   public void testRead(){
-    GuestbookDTO gDto = service.read(104L);
-    Assertions.assertNotNull(gDto);
-    log.info(gDto);
+    Long gno = 105L;
+    GuestbookDTO gDto = service.read(gno);
+    GuestbookDTO expect = GuestbookDTO.builder().title("제에모옥").content("내애요옹").writer("작성자").build();
+    Assertions.assertEquals(gDto.getTitle(), expect.getTitle());
+    Assertions.assertEquals(gDto.getContent(), expect.getContent());
+    Assertions.assertEquals(gDto.getWriter(), expect.getWriter());
   }
 
   @Test
-  public void testList() {
-    List<GuestbookDTO> gDtds = service.readAll();
-    Assertions.assertNotNull(gDtds);
-    log.info(gDtds);
+  public void testReadAll() {
+    service.readAll().forEach(log :: info);
   }
 
   @Test
+  public void testGetList(){
+   PageResponseDTO<?, ?> dto = service.getList(PageRequestDTO.builder().page(2).size(5).build());
+   log.info(dto);
+  }
+
+  @Test
+  @Transactional
+  @Commit
   public void testModify() {
-    int result = service.modify(GuestbookDTO.builder().gno(104L).title("Spring").content("재밌는데").writer("어려워하는사람").build());
-    Assertions.assertEquals(1, result);
-    log.info(result);
+    Long gno = 105L;
+    GuestbookDTO gDto = service.read(gno);
+    gDto.setContent("수정내용");
+    service.modify(gDto);
   }
 
   @Test
   public void testDelete() {
-    int result = service.remove(104L);
-    Assertions.assertEquals(1, result);
-    log.info(result);
+    service.remove(103L);
   }
+
+  @Test
+  public void querryDSLTest() {
+    PageRequestDTO dto = PageRequestDTO.builder().page(1).size(5).keyword("0").type("tc").build();
+    service.getList(dto);
+  }
+
 
 
 }
