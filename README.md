@@ -13,3 +13,6 @@
 - 페이징 처리 코드 작성(PageRequestDTO, PageResponseDTO, GuestbookController Mapping 처리)
 - 페이징 관련 화면 구현(list, read, write, modify)
 - 검색 조건 관련 작성 및 서비스 코드 작성/구현
+  
+### 📅 250725
+- 글 조회, 수정, 삭제시에 페이징 처리 마무리(쿼리스트링) 
