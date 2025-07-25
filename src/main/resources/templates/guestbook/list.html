@@ -7,6 +7,7 @@
         <a th:href="@{/guestbook/register}" class="btn btn-outline-primary">REGISTER</a>
       </span>
       </h1>
+      [[${requestDto.qs}]]
       <form action="/guestbook/list" method="get">
         <input type="hidden" name="page" th:value="1">
         <input type="hidden" name="size" th:value="${dto.size}">
@@ -21,7 +22,7 @@
           </select>
           <input type="text" class="form-control w-50" name="keyword" th:value="${requestDto.keyword}">
           <button class="btn btn-outline-secondary">Search</button>
-          <button class="btn btn-outline-secondary">Clear</button>
+          <button class="btn btn-outline-secondary" onclick="this.closest('form').querySelectorAll('select, input[name=keyword]').forEach(el => el.remove());">Clear</button>
         </div>
       </form>
       <table class="table table-striped table-bordered table-hover">
@@ -33,15 +34,15 @@
         </tr>
         <tr th:each="g : ${dto.list}">
           <th scope="row">[[${g.gno}]]</th>
-          <td><a th:href="@{/guestbook/read(gno = ${g.gno}, page = ${dto.page})}" th:text="${g.title}"></a></td>
+          <td><a th:href="@{'/guestbook/read' + ${requestDto.qs2} + '&gno=' + ${g.gno}}" th:text="${g.title}"></a></td>
           <td th:text="${g.writer}"></td>
           <td th:text="${g.regDate}"></td>
         </tr>
       </table>
       <ul class="pagination justify-content-center">
-        <li class="page-item"><a class="page-link" href="#" th:href="@{/guestbook/list(page = ${dto.start -1})}" th:if="${dto.prev}">Prev</a></li>
-        <li th:class="'page-item' + ${dto.page == page ? ' active' : ''}" th:each="page : ${dto.pageList}"><a class="page-link" th:href="@{/guestbook/list(page = ${page})}">[[${page}]]</a></li>
-        <li class="page-item"><a class="page-link" href="#" th:href="@{/guestbook/list(page = ${dto.end + 1})}" th:if="${dto.next}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="#" th:href="@{'/guestbook/list' + ${requestDto.qs} + '&page=' + ${dto.start - 1}}" th:if="${dto.prev}">Prev</a></li>
+        <li th:class="'page-item' + ${dto.page == page ? ' active' : ''}" th:each="page : ${dto.pageList}"><a class="page-link" th:href="@{/guestbook/list(page = ${page}, size=${dto.size}, type=${requestDto.type}, keyword=${requestDto.keyword})}">[[${page}]]</a></li>
+        <li class="page-item"><a class="page-link" href="#" th:href="@{/guestbook/list(page = ${dto.end + 1}, size=${dto.size}, type=${requestDto.type}, keyword=${requestDto.keyword})}" th:if="${dto.next}">Next</a></li>
       </ul>
       <!-- The Modal -->
       <div class="modal" id="myModal">
